@@ -1,0 +1,59 @@
+{extend name="public/base2"}
+{block name="page_seo"}
+<title>category create</title>
+{/block}
+
+{block name="page_content"}
+<div class="page-container">
+    <form action="{:url('admin/category/create')}" method="post" class="form form-horizontal">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">
+                <span class="c-red">*</span>
+                分类名称：</label>
+            <div class="formControls col-xs-6 col-sm-6">
+                <input type="text" class="input-text" value="" placeholder="" name="name" required>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">
+                <span class="c-red">*</span>
+                关键词：</label>
+            <div class="formControls col-xs-6 col-sm-6">
+                <input type="text" class="input-text" value="" placeholder="" name="keywords" required>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">
+                <span class="c-red">*</span>
+                描述：</label>
+            <div class="formControls col-xs-6 col-sm-6">
+                <input type="text" class="input-text" value="" placeholder="" name="desc" required>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">选择父分类：</label>
+            <div class="formControls col-xs-6 col-sm-6">
+                <span class="select-box">
+                    <select name="pid" class="select" id="teacher">
+                        <option value="0">顶级分类</option>
+                        {foreach $data as $val}
+                            <option value="{$val.id}">{if $val.level neq 0}|{/if}{$val.catename}</option>
+                        {/foreach}
+                    </select>
+				</span>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-9 col-offset-2">
+                <input class="btn btn-primary radius" id="save" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</div>
+{/block}
+
+{block name="page_js"}
+<script>
+
+</script>
+{/block}

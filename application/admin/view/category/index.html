@@ -1,0 +1,54 @@
+{extend name="public/base2"}
+{block name="page_seo"}
+<title>category index</title>
+{/block}
+
+{block name="page_content"}
+<div class="pd-20">
+    <table class="table table-border table-bordered table-hover table-bg table-sort">
+        <thead>
+        <tr class="text-c">
+            <th width="25"><input type="checkbox" name="" value=""></th>
+            <th width="25">ID</th>
+            <th width="50">分类名称</th>
+            <th width="50">创建时间</th>
+            <th width="100">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {foreach $data as $val}
+        <tr class="text-c">
+            <td><input type="checkbox" value="{$val.id}" name=""></td>
+            <td>{$val.id}</td>
+            <td style="text-align: left">{if $val.level neq 0}|{/if}{$val.catename}</td>
+            <td>{$val.create_time}</td>
+            <td class="f-14 user-manage">
+                <a title="编辑" href="javascript:;" onclick="edit('{:url('admin/category/update',['id'=>$val.id])}','修改')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont Hui-iconfont-edit2"></i></a>
+                <a title="删除" href="javascript:;" onclick="del({$val.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont Hui-iconfont-del"></i></a>
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+</div>
+{/block}
+
+{block name="page_js"}
+<script>
+function edit(url,title) {
+    layer_show(title,url)
+}
+function del(id) {
+    layer.confirm('确定删除？', {
+        btn: ['确定','取消'] //按钮
+    }, function(){
+        $.post('{:url("admin/category/del")}',{id:id},function (data) {
+            layer.msg(data.msg,{icon:1,time:1000})
+            window.location.reload();
+        })
+    }, function(index){
+        layer.close(index)
+    });
+}
+</script>
+{/block}

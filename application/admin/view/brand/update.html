@@ -1,0 +1,92 @@
+{extend name="public/base2"}
+{block name="page_seo"}
+<title>添加班级</title>
+{/block}
+{block name="page_content"}
+<div class="page-container">
+    <form action="" method="post" class="form form-horizontal" id="form-user-add">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">
+                <span class="c-red">*</span>
+                课程名称：</label>
+            <div class="formControls col-xs-6 col-sm-6">
+                <input type="text" class="input-text" value="{$data.title}" placeholder="" id="title" required>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">
+                <span class="c-red">*</span>
+                课程介绍：</label>
+            <div class="formControls col-xs-6 col-sm-6">
+                <input type="text" class="input-text" value="{$data.desc}" placeholder="" id="desc" required>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">选择老师：</label>
+            <div class="formControls col-xs-6 col-sm-6">
+                <span class="select-box">
+                    <select name="articletype" class="select" id="teacher">
+                        {notpresent name="teacher"}
+                        <option value="">还没有老师</option>
+                        {else /}
+                            {foreach $teacher as $val}
+                            <option value="">请选择老司机</option>
+                            <option name="teacher" value="{$val.id}" {eq name='$val.id' value="$data.teacher"}selected{/eq}>{$val.username}</option>
+                            {/foreach}
+                        {/notpresent}
+                    </select>
+				</span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">添加学生：</label>
+            <div class="col-xs-8 col-sm-9 skin-minimal">
+                {notpresent name="student"}
+                <div class="check-box">
+                    <label>还没有学生</label>
+                </div>
+                {else /}
+                {foreach $student as $val}
+                    <label class="radio-box">
+                        <input type="checkbox" class="checkbox" name="student" value="{$val.id}" {if(in_array($val.id,$data['student']))}checked{/if}>{$val.username}
+                    </label>
+                {/foreach}
+                {/notpresent}
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-9 col-offset-2">
+                <input class="btn btn-primary radius" id="save" type="button" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</div>
+{/block}
+{block name="page_js"}
+<script>
+    $('.skin-minimal input').iCheck({
+        checkboxClass: 'icheckbox-blue',
+        radioClass: 'iradio-blue',
+        increaseArea: '20%'
+    });
+    $("#save").on('click',function () {
+        var title = $("#title").val()
+        var desc = $("#desc").val()
+        var studentArr = new Array();
+        $("input[name='student']:checked").each(function () {
+            studentArr.push($(this).val());
+        });
+        var student = studentArr.join(',');
+        var teacher = $("#teacher option:selected").val()
+        var parmars = {title:title,desc:desc,student:student,teacher:teacher}
+        $.post('{:url("admin/brand/save")}',parmars,function (data) {
+            if (data.code == 200) {
+                layer.msg(data.msg,{icon:1,time:1000})
+                window.location.href = "{:url('admin/brand/index')}"
+            }else{
+                layer.msg(data.msg,{icon:2,time:1000})
+            }
+        },'json')
+    })
+</script>
+{/block}

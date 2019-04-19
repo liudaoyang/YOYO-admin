@@ -1,0 +1,157 @@
+{extend name="public/base2"}
+{block name="page_seo"}
+<title>管理员列表</title>
+{/block}
+{block name="page_content"}
+<nav class="breadcrumb">
+    <i class="Hui-iconfont">&#xe67f;</i> 首页
+    <span class="c-gray en">&gt;</span> 用户中心
+    <span class="c-gray en">&gt;</span> 用户管理
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="pd-20">
+    <div class="text-c"> 日期范围：
+        <input type="text" onfocus="WdatePicker()" id="datemin" class="input-text Wdate" style="width:120px;">
+        -
+        <input type="text" onfocus="WdatePicker()" id="datemax" class="input-text Wdate" style="width:120px;">
+        <input type="text" class="input-text" style="width:250px" placeholder="输入会员名称、电话、邮箱" id="" name=""><button type="submit" class="btn btn-success" id="" name=""><i class="icon-search"></i> 搜用户</button>
+
+    </div>
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+    <span class="l">
+        <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="icon-trash"></i> 批量删除</a>
+        <a href="javascript:;" onclick="user_edit('添加用户','{:url("admin/user/store")}')" class="btn btn-primary radius"><i class="icon-plus"></i> 添加用户</a>
+    </span>
+        <span class="r">共有数据：<strong>{$count}</strong> 条</span>
+    </div>
+    <table class="table table-border table-bordered table-hover table-bg table-sort">
+        <thead>
+        <tr class="text-c">
+            <th width="25"><input type="checkbox" name="" value=""></th>
+            <th width="80">ID</th>
+            <th width="100">用户名</th>
+            <th width="50">性别</th>
+            <th width="90">手机</th>
+            <th width="150">邮箱</th>
+            <th width="">权限</th>
+            <th width="130">加入时间</th>
+            <th width="70">状态</th>
+            <th width="100">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {foreach $user as $data}
+        <tr class="text-c">
+            <td><input type="checkbox" value="{$data.id}" name="id"></td>
+            <td>{$data.id}</td>
+
+            <td><u style="cursor:pointer" class="text-primary" onclick="user_show('10001','360','','张三','user-show.html')">{$data.username}</u></td>
+            <td>{if($data.sex == 1)}男{elseif($data.sex == 2)}女{elseif($data.sex == 3)}不公开{else}未设置{/if}</td>
+            <td>13000000000</td>
+            <td>{$data.email|default="还没有设置邮箱"}</td>
+            <td class="text-l">{$data.auth|raw|default='还没有设置权限角色'}<i class="icon-edit"></i></td>
+            <td>{$data.create_time}</td>
+            <td class="user-status">
+                {if($data.status == 1)}
+                <span class="label label-success">已启用</span>
+                {elseif ($data.status == 0)}
+                <span class="label label-danger">已禁用</span>
+                {else}
+                <span class="label label-danger">禁用</span>
+                {/if}
+            </td>
+            <td class="f-14 user-manage">
+                {if($data.status == 1)}
+                <a style="text-decoration:none" onClick="user_stop({$data.id})" href="javascript:;" title="停用"><i class="Hui-iconfont Hui-iconfont-shenhe-tingyong"></i></a>
+                {elseif($data.status == 0)}
+                <a style="text-decoration:none" onClick="user_stop({$data.id})" href="javascript:;" title="启用"><i class="Hui-iconfont Hui-iconfont-gouxuan"></i></a>
+                {/if}
+                <a title="编辑管理员" href="javascript:;" onclick="user_edit('编辑','{:url("admin/user/store",["id"=>$data.id])}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont Hui-iconfont-edit2"></i></a>
+                <a style="text-decoration:none" class="ml-5" onClick="auth('用户授权','{:url('admin/user/auth',['id'=>$data.id])}')" href="javascript:;" title="修改密码"><i class="Hui-iconfont Hui-iconfont-add2"></i></a>
+                <a title="永久删除" href="javascript:;" onclick="del({$data.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont Hui-iconfont-del2"></i></a>
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+</div>
+{/block}
+{block name="page_js"}
+<script>
+    function user_stop(id) {
+        $.post('{:url("admin/user/status")}',{id:id},function (data) {
+            layer.msg(data.msg)
+            if (data.code == 200) {
+                setTimeout(function () {
+                    window.location.reload()
+                },'1000')
+            }
+        },'json')
+    }
+    function user_edit(title,url) {
+        layer.open({
+            type: 2,
+            title: title,
+            shade: 0.1,
+            shadeClose: true,
+            maxmin: true, //开启最大化最小化按钮
+            area: ['893px','500px'],
+            content: url
+        })
+    }
+    function auth(title,url) {
+        layer.open({
+            type: 2,
+            title: title,
+            shade: 0.1,
+            shadeClose: true,
+            maxmin: true, //开启最大化最小化按钮
+            area: ['893px','500px'],
+            content: url
+        })
+    }
+    function datadel(){
+        layer.confirm('确认要删除吗？',function(index){
+            var ids =[];
+            $('input[name="id"]:checked').each(function(){
+                ids.push($(this).val());
+            });
+            if (ids == '') {
+                layer.msg('您还没选择要删除的管理员!',{icon:2,time:1000});
+                return
+            }
+            $.ajax({
+                type: 'POST',
+                url: '{:url("admin/user/soft_del")}',
+                data:{id:ids},
+                dataType: 'json',
+                success: function(data){
+                    if (data.code == 100) {
+                        layer.msg(data.msg+data.data.username+'不允许删除!',{icon:2,time:2000})
+                    }
+                    if (data.code == 200) {
+                        layer.msg(data.msg,{icon:1,time:1000});
+                        $('input[name="id"]:checked').parent('td').parent('tr').remove();
+                    }
+                },
+                error:function(data) {
+                    console.log(data.msg);
+                },
+            });
+        });
+    }
+
+    function del(id) {
+        $.post("{:url('admin/user/del')}",{id:id},function (data) {
+            if (data.code == 200) {
+                layer.msg(data.msg,{icon:1,time:1000},function () {
+                    window.location.reload()
+                })
+            }else{
+                layer.msg(data.msg)
+            }
+
+        },'json')
+    }
+</script>
+{/block}

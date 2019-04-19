@@ -1,0 +1,62 @@
+{extend name="public/base2"}
+{block name="page_seo"}
+<title>添加管理员角色</title>
+{/block}
+{block name="page_content"}
+<article class="page-container">
+    <form action="" method="post" class="form form-horizontal" id="form-admin-role-add">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>角色名称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="{$role.title|default=''}" placeholder="" id="title" name="roleName">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3">权限描述：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="{$role.desc|default=''}" placeholder="" id="desc" name="">
+            </div>
+        </div>
+        {notempty  name='val'}
+        <input type="hidden" id="id" value="{$role.id}">
+        {/notempty}
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <button type="button" class="btn btn-success radius" id="save"><i class="icon-ok"></i> 确定</button>
+            </div>
+        </div>
+    </form>
+</article>
+{/block}
+{block name="page_js"}
+<script>
+    $("#save").on('click',function () {
+        var title = $("#title").val()
+        if (!title) {
+            layer.msg('角色名称不能为空',{icon:2,time:1000})
+            $("#title").focus()
+            return
+        }
+        var desc = $("#desc").val()
+        var id = $("#id").val()
+        var parmars
+        if (id) {
+            parmars = {title:title,desc:desc,id:id}
+        }else {
+            parmars = {title:title,desc:desc}
+        }
+        $.post('{:url("admin/role/store")}',parmars,function (data) {
+            if (data.code == 200) {
+                layer.msg(data.msg,{icon:1,time:1000})
+                setTimeout(function () {
+                    var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                    window.parent.location.reload();//刷新父页面
+                    parent.layer.close(index);
+                },'1000')
+            }else{
+                layer.msg(data.msg,{icon:2,time:1000})
+            }
+        },'json')
+    })
+</script>
+{/block}

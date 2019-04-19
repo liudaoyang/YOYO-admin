@@ -1,0 +1,39 @@
+{extend name="public/base2"}
+{block name="page_seo"}
+<title>create tag</title>
+{/block}
+{block name="page_content"}
+<div class="page-container">
+    <form action="" method="post" class="form form-horizontal" id="form-user-add">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">
+                <span class="c-red">*</span>
+                标签名称：</label>
+            <div class="formControls col-xs-6 col-sm-6">
+                <textarea id="tname" class="textarea" placeholder="可以批量添加标签,每行一个!" cols="30" rows="8"></textarea>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-9 col-offset-2">
+                <input class="btn btn-primary radius" id="save" type="button" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</div>
+{/block}
+{block name="page_js"}
+<script>
+    $("#save").on('click',function () {
+        var tname = $("#tname").val()
+        var parmars = {tname:tname}
+        $.post('{:url("admin/tag/create")}',parmars,function (data) {
+            if (data.code == 200) {
+                layer.msg(data.msg,{icon:1,time:1000})
+                window.location.reload()
+            }else{
+                layer.msg(data.msg,{icon:2,time:1000})
+            }
+        },'json')
+    })
+</script>
+{/block}

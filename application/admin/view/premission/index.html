@@ -1,0 +1,53 @@
+{extend name="public/base2"}
+{block name="page_seo"}
+<title>{$title}</title>
+{/block}
+{block name="page_content"}
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 权限管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+    <table class="table table-border table-bordered table-bg">
+        <thead>
+        <tr>
+            <th scope="col" colspan="7">权限节点</th>
+        </tr>
+        <tr class="text-c">
+            <th width="200">权限地址</th>
+            <th width="300">权限名称</th>
+        </tr>
+        </thead>
+        <tbody>
+        {foreach $node as $value}
+        <tr class="text-l">
+            <td class="text-1">{$value.node|raw}</td>
+            <td>
+                <input type="text" class="input-text" placeholder="节点权限名称" onblur="save_node_name(this)" value="{$value.title|default=''}">
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+</div>
+{/block}
+{block name="page_js"}
+<script>
+    $('.check-box').iCheck({
+        checkboxClass: 'icheckbox-blue',
+        radioClass: 'iradio-blue',
+        increaseArea: '20%'
+    });
+    function save_node_name(data) {
+        var node_name = $(data).val()
+        if (!node_name) {
+            return
+        }
+        var node = $(data).parent().prev('td').html()
+        $.post('{:url("admin/premission/save")}',{node:node,node_name:node_name},function (data) {
+            if (data.code == 200) {
+                layer.msg(data.msg,{icon:1,time:1000})
+            }else{
+                layer.msg(data.msg,{icon:2,time:1000})
+            }
+        },'json')
+    }
+</script>
+{/block}

@@ -1,0 +1,79 @@
+{extend name="public/base2"}
+{block name="page_seo"}
+<title>编辑管理员</title>
+{/block}
+{block name="page_content"}
+<div class="pd-20">
+  <div class="Huiform">
+    <form action="{:url('admin/user/store')}" method="post">
+      <table class="table table-bg">
+        <tbody>
+        <tr>
+          <th width="100" class="text-r"><span class="c-red">*</span> 用户名：</th>
+          <td>
+            <input type="text" style="width:200px" class="input-text" value="{$user.username|default=''}" placeholder="" id="username" name="username" datatype="*2-16" nullmsg="用户名不能为空">
+          </td>
+        </tr>
+        <tr>
+          <th width="100" class="text-r"><span class="c-red">*</span> 密码：</th>
+          <td>
+            <input type="password" style="width:300px" class="input-text" value="" placeholder="" id="password" name="password" datatype="*2-16" nullmsg="密码不能为空">
+          </td>
+        </tr>
+        <tr>
+          <th class="text-r"><span class="c-red">*</span> 性别：</th>
+          <td>
+            <label><input type="radio" name="sex" value="1" {if(isset($user.sex) && $user.sex == 1)}checked{/if}>男</label>
+            <label><input type="radio" name="sex" value="2" {if(isset($user.sex) && $user.sex == 2)}checked{/if}>女</label>
+            <label><input type="radio" name="sex" value="3" {if(isset($user.sex) && $user.sex == 3)}checked{/if}>保密</label>
+          </td>
+        </tr>
+        <tr>
+          <th class="text-r">邮箱：</th>
+          <td><input type="text" style="width:300px" class="input-text" value="{$user.email|default=''}" placeholder="@" id="email" name="email"></td>
+        </tr>
+        <input type="hidden" name="id" id="id" value="{$user.id|default=''}">
+        <tr>
+          <th></th>
+          <td>
+            <button class="btn btn-success radius" id="save" type="button"><i class="icon-ok"></i> 确定</button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </form>
+  </div>
+</div>
+{/block}
+{block name="page_js"}
+<script>
+  $("#save").on('click',function () {
+      var username = $("#username").val()
+      if (!username) {
+          layer.msg('用户名不能为空');
+          $("#username").focus()
+          return
+      }
+      var password = $("#password").val()
+      var email = $("#email").val()
+      var id = $("#id").val()
+      var sex = $("input[type=radio]:checked").val()
+      var parmars
+      if (id) {
+          parmars = {username:username,password:password,email:email,sex:sex,id:id}
+      }else{
+          parmars = {username:username,password:password,email:email,sex:sex}
+      }
+      $.post('{:url("admin/user/store")}',parmars,function (data) {
+          if (data.code == 200) {
+              layer.msg(data.msg,{icon:1,time:1000})
+              setTimeout(function () {
+                  var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                  window.parent.location.reload();//刷新父页面
+                  parent.layer.close(index);
+              },'1000')
+          }
+      },'json')
+  })
+</script>
+{/block}

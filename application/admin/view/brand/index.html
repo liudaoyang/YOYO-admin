@@ -1,0 +1,70 @@
+{extend name="public/base2"}
+{block name="page_seo"}
+<title>teacher index</title>
+{/block}
+{block name="page_content"}
+<div class="pd-20">
+    <table class="table table-border table-bordered table-hover table-bg table-sort">
+        <thead>
+        <tr class="text-c">
+            <th width="25"><input type="checkbox" name="" value=""></th>
+            <th width="25">ID</th>
+            <th width="50">班级名称</th>
+            <th width="100">班级介绍</th>
+            <th width="50">老师</th>
+            <th width="50">学生</th>
+            <th width="50">创建时间</th>
+            <th width="50">最后修改时间</th>
+            <th width="100">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {foreach $data as $val}
+        <tr class="text-c">
+            <td><input type="checkbox" value="{$val.id}" name=""></td>
+            <td>{$val.id}</td>
+
+            <td><u style="cursor:pointer" class="text-primary" onclick="user_show('10001','360','','张三','user-show.html')">{$val.title}</u></td>
+            <td>
+                {$val.desc}
+            </td>
+            <td>{$val.teacher_name}</td>
+            <td>{$val.student_data|raw}</td>
+            <td>{$val.create_time}</td>
+            <td>{$val.update_time}</td>
+            <td class="f-14 user-manage">
+                <a title="编辑" href="javascript:;" onclick="edit('{:url('admin/brand/read',['id'=>$val.id])}','修改')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont Hui-iconfont-edit2"></i></a>
+                <a style="text-decoration:none" class="ml-5" onClick="user_password_edit('10001','370','228','修改密码','user-password-edit.html')" href="javascript:;" title="修改密码"><i class="icon-key"></i></a>
+                <a title="删除" href="javascript:;" onclick="del({$val.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont Hui-iconfont-del"></i></a>
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+</div>
+{/block}
+{block name="page_js"}
+<script>
+    function edit(url,title) {
+        layer.open({
+            type:2,
+            title:title,
+            area: ['893px','500px'],
+            content: url
+        })
+    }
+    function del(id) {
+
+        layer.confirm('确定删除？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.post('{:url("admin/brand/delete")}',{id:id},function (data) {
+                layer.msg(data.msg,{icon:1,time:1000})
+                window.location.reload();
+            })
+        }, function(index){
+            layer.close(index)
+        });
+    }
+</script>
+{/block}

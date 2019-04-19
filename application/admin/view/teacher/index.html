@@ -1,0 +1,74 @@
+{extend name="public/base2"}
+{block name="page_seo"}
+<title>teacher index</title>
+{/block}
+{block name="page_content"}
+<div class="pd-20">
+    <table class="table table-border table-bordered table-hover table-bg table-sort">
+        <thead>
+        <tr class="text-c">
+            <th width="25"><input type="checkbox" name="" value=""></th>
+            <th width="80">ID</th>
+            <th width="100">用户名</th>
+            <th width="40">性别</th>
+            <th width="90">手机</th>
+            <th width="150">邮箱</th>
+            <th width="130">加入时间</th>
+            <th width="100">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {foreach $data as $val}
+        <tr class="text-c">
+            <td><input type="checkbox" value="{$val.id}" name=""></td>
+            <td>{$val.id}</td>
+
+            <td><u style="cursor:pointer" class="text-primary" onclick="user_show('10001','360','','张三','user-show.html')">{$val.username}</u></td>
+            <td>
+                {if($val.sex == 1)}
+                男
+                {elseif($val.sex == 2)}
+                女
+                {else}
+                不公开
+                {/if}
+            </td>
+            <td>{$val.phone}</td>
+            <td>{$val.email}</td>
+            <td>{$val.add_time}</td>
+            <td class="f-14 user-manage">
+                <a title="编辑" href="javascript:;" onclick="user_edit('{:url('admin/teacher/read',['id'=>$val.id])}','修改')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont Hui-iconfont-edit2"></i></a>
+                <a style="text-decoration:none" class="ml-5" onClick="user_password_edit('10001','370','228','修改密码','user-password-edit.html')" href="javascript:;" title="修改密码"><i class="icon-key"></i></a>
+                <a title="删除" href="javascript:;" onclick="user_del({$val.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont Hui-iconfont-del"></i></a>
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+</div>
+{/block}
+{block name="page_js"}
+<script>
+    function user_edit(url,title) {
+        layer.open({
+            type:2,
+            title:title,
+            area: ['893px','500px'],
+            content: url
+        })
+    }
+    function user_del(id) {
+
+        layer.confirm('确定删除？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.post('{:url("admin/teacher/delete")}',{id:id},function (data) {
+                layer.msg(data.msg,{icon:1,time:1000})
+                window.location.reload();
+            })
+        }, function(index){
+            layer.close(index)
+        });
+    }
+</script>
+{/block}

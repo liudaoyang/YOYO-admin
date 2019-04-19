@@ -1,0 +1,66 @@
+{extend name="public/base2"}
+{block name="page_seo"}
+<title>添加班级</title>
+{/block}
+{block name="page_content"}
+<div class="page-container">
+    <form action="" method="post" class="form form-horizontal" id="form-user-add">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">
+                <span class="c-red">*</span>
+                名字：</label>
+            <div class="formControls col-xs-6 col-sm-6">
+                <input type="text" class="input-text" value="{$data.username|default=''}" placeholder="" id="username" required>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">邮箱：</label>
+            <div class="formControls col-xs-6 col-sm-6">
+                <input type="text" class="input-text" value="{$data.email|default=''}" placeholder="" id="email">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">电话：</label>
+            <div class="formControls col-xs-6 col-sm-6">
+                <input type="text" class="input-text" value="{$data.phone|default=''}" placeholder="" id="phone">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>性别：</label>
+            <div class="formControls col-xs-6 col-sm-6 skin-minimal">
+                <label><input type="radio" name="sex" value="1" {eq name="$data.sex" value="1"}checked{/eq}>男</label>
+                <label><input type="radio" name="sex" value="2" {eq name="$data.sex" value="2"}checked{/eq}>女</label>
+                <label><input type="radio" name="sex" value="3" {eq name="$data.sex" value="3"}checked{/eq}>保密</label>
+            </div>
+        </div>
+        <input type="hidden" id="id" value="{$data.id}">
+        <div class="row cl">
+            <div class="col-9 col-offset-2">
+                <input class="btn btn-primary radius" id="save" type="button" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</div>
+{/block}
+{block name="page_js"}
+<script>
+    $("#save").on('click',function () {
+        var id = $("#id").val()
+        var username = $("#username").val()
+        var email = $("#email").val()
+        var phone = $("#phone").val()
+        var sex = $("input[type=radio]:checked").val()
+        var parmars = {id:id,username:username,email:email,phone:phone,sex:sex}
+        $.post('{:url("admin/teacher/edit")}',parmars,function (data) {
+            if (data.code == 200) {
+                layer.msg(data.msg,{icon:1,time:1000})
+                setTimeout(function () {
+                    var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                    window.parent.location.reload();//刷新父页面
+                    parent.layer.close(index);
+                },'1000')
+            }
+        },'json')
+    })
+</script>
+{/block}

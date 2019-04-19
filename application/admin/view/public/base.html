@@ -1,0 +1,26 @@
+{include file="public/_meta"}
+{block name="seo"}
+seo相关
+{/block}
+</head>
+<body>
+{include file="public/_header"}
+{include file="public/_menu"}
+{block name="content"}
+主体内容
+{/block}
+<div class="contextMenu" id="Huiadminmenu">
+    <ul>
+        <li id="closethis">关闭当前 </li>
+        <li id="closeall">关闭全部 </li>
+    </ul>
+</div>
+{include file="public/_footer"}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
+{block name="js"}
+js脚本相关
+{/block}
+</body>
+</html>
