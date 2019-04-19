@@ -16,7 +16,9 @@ YOYO-admin 是基于MIT协议的开源框架，它完全免费。你可以免费
 
 ## 安装
 
-和ThinkPHP安装一样,下载项目到你项目目录,解析目录为public
++ 和ThinkPHP安装一样,下载项目到你项目目录,解析目录为public
++ 命令行切换到项目目录 执行composer install 安装TP文件目录
+
 
 暂时还不支持composer安装
 
